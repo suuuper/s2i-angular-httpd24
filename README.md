@@ -7,6 +7,8 @@ This image supports incremental builds by reusing the `node_modules` folder
 between builds. To use this, you must enable incremental builds in your build
 configuration.
 
+For building Angular 6+ apps, use the `master` branch instead.
+
 For more information about using these images with OpenShift, please see the
 official OpenShift documentation.
 
