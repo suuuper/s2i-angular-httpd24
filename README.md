@@ -1,8 +1,8 @@
 
-# S2I Builder for Angular Apps
+# S2I Builder for Angular 2-5 Apps
 
-This repository contains the source for building Angular applications based on
-the official httpd24 CentOS and Red Hat images using source-to-image (S2I).
+This repository contains the source for building Angular 2-5 applications based
+on the official httpd24 CentOS and Red Hat images using source-to-image (S2I).
 This image supports incremental builds by reusing the `node_modules` folder
 between builds. To use this, you must enable incremental builds in your build
 configuration.
@@ -22,6 +22,10 @@ The following configuration environment variables are specific to this image:
 * **NPM_CONFIG_LOGLEVEL** - this defaults to `info`.
 
 All other environment variables from the base image can also be overriden.
+
+Additionally, you can mount Angular environment files in `/tmp/ng-environments/`
+and they will be copied to `./src/environments/`. This is useful if you'd like
+to override the environment files stored in source.
 
 ## Installation
 

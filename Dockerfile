@@ -32,22 +32,27 @@ LABEL summary="$SUMMARY" \
 
 # Become root to install packages (was dropped to 1001 in the base image)
 USER 0
+# Make a directory to place custom Angular environments
+RUN mkdir /tmp/ng-environments
 # Copy all the files the container needs
 COPY ./root/ /
 # Set the directory location to whatever is default in the httpd image
 # and set the permissions of angular.conf to match the rest of conf.d
-RUN sed -i -e "s%/var/www%${HTTPD_APP_ROOT}/src%" /etc/httpd/conf.d/angular.conf && \
+RUN sed -i -e "s%REPLACE_WITH_HTTPD_APP_ROOT%${HTTPD_APP_ROOT}%" /etc/httpd/conf.d/angular.conf && \
     chmod -R a+rwx ${HTTPD_MAIN_CONF_D_PATH}
 # Postfix all the httpd S2I files with `httpd` so they don't get overwritten
 RUN for file in /usr/libexec/s2i/*; do cp -- "$file" "$file-httpd"; done
+# Don't try to delete ${dir}/httpd-ssl since this causes an OpenShift pod to
+# fail when the TLS files are configured in a volume mount
+RUN sed -i '/^.*rm -rf ${dir}\/httpd-ssl.*/d' /usr/share/container-scripts/httpd/common.sh
 # Copy the S2I scripts
 COPY ./s2i/bin/ /usr/libexec/s2i
 
 # Install NPM
 RUN yum install -y --setopt=tsflags=nodocs yum-config-manager centos-release-scl && \
     yum-config-manager --enable rhel-server-rhscl-7-rpms && \
-    yum install -y --setopt=tsflags=nodocs rh-nodejs8 rh-nodejs8-npm && \
-    rpm -V rh-nodejs8 rh-nodejs8-npm && \
+    yum install -y --setopt=tsflags=nodocs rh-nodejs8 rh-nodejs8-npm git && \
+    rpm -V rh-nodejs8 rh-nodejs8-npm git && \
     yum clean all -y
 
 # This default user is created in the base image
