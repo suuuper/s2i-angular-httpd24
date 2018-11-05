@@ -35,7 +35,7 @@ USER 0
 # Make a directory to place custom Angular environments
 RUN mkdir /tmp/ng-environments
 # Copy all the files the container needs
-COPY ./root/ /
+COPY root/ /
 # Set the directory location to whatever is default in the httpd image
 # and set the permissions of angular.conf to match the rest of conf.d
 RUN sed -i -e "s%REPLACE_WITH_HTTPD_APP_ROOT%${HTTPD_APP_ROOT}%" /etc/httpd/conf.d/angular.conf && \
